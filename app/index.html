@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AICE Basic 학습 대시보드</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">AICE Basic</p>
+          <h1>학습 대시보드</h1>
+          <p class="topbar-copy">
+            공식 범위와 프로젝트 문서를 바탕으로 개념, 퀴즈, 모의고사, AIDU 사고 흐름을 반복 연습합니다.
+          </p>
+        </div>
+        <div class="topbar-tools">
+          <div class="today-box" aria-label="오늘 날짜">
+            <span>오늘</span>
+            <strong id="todayDate">-</strong>
+          </div>
+          <a class="outline-link" href="https://aice.study/info/aice/basic" target="_blank" rel="noreferrer">
+            공식 정보 확인
+          </a>
+          <button class="danger-text-button" id="resetAllButton" type="button">학습 기록 초기화</button>
+        </div>
+      </header>
+
+      <nav class="quick-nav" aria-label="주요 학습 영역">
+        <a href="#dashboard">대시보드</a>
+        <a href="#studyCards">개념 카드</a>
+        <a href="#quizMode">퀴즈</a>
+        <a href="#questionManager">문제 관리</a>
+        <a href="#mockExam">모의고사</a>
+        <a href="#aiduPractice">AIDU 연습</a>
+      </nav>
+
+      <main class="dashboard" id="dashboard">
+        <section class="hero-grid" aria-label="오늘의 학습 요약">
+          <article class="panel today-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Today</p>
+                <h2>오늘의 추천 학습</h2>
+              </div>
+              <span class="status-pill" id="todayStatus">대기 중</span>
+            </div>
+            <div class="focus-box">
+              <p class="focus-topic" id="focusTopic">데이터 확인 → 전처리 → 모델링 → 평가 흐름 잡기</p>
+              <p id="focusReason">
+                아직 약점 기록이 적습니다. 핵심 개념 카드와 짧은 퀴즈로 기본 흐름을 먼저 확인하세요.
+              </p>
+            </div>
+            <ol class="study-steps" id="todayTasks"></ol>
+            <button class="primary-button" id="completeTodayButton" type="button">오늘 학습 완료 표시</button>
+          </article>
+
+          <section class="metric-grid" aria-label="진도 요약">
+            <article class="metric-card">
+              <span>완료한 카드</span>
+              <strong id="cardProgress">0/0</strong>
+            </article>
+            <article class="metric-card">
+              <span>퀴즈 정답률</span>
+              <strong id="quizRate">0%</strong>
+            </article>
+            <article class="metric-card">
+              <span>최근 모의고사</span>
+              <strong id="latestMockScore">-</strong>
+            </article>
+            <article class="metric-card">
+              <span>학습 준비도</span>
+              <strong id="readinessScore">0%</strong>
+            </article>
+          </section>
+        </section>
+
+        <section class="insight-grid">
+          <article class="panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Source-Aware Content</p>
+                <h2>출제 기준</h2>
+              </div>
+            </div>
+            <div class="source-grid" id="sourceSummary"></div>
+          </article>
+
+          <article class="panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Weak Clinic</p>
+                <h2>약점 처방</h2>
+              </div>
+            </div>
+            <div id="weakTopics" class="weak-list"></div>
+          </article>
+        </section>
+
+        <section class="workspace-section" id="studyCards" aria-labelledby="cardsTitle">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Study Cards</p>
+              <h2 id="cardsTitle">개념 카드</h2>
+            </div>
+            <span class="section-note">카드 완료와 복습 상태는 이 브라우저에 저장됩니다.</span>
+          </div>
+          <div class="filter-row" id="topicFilters" aria-label="개념 카드 주제 필터"></div>
+          <div class="study-layout">
+            <div class="card-grid" id="studyCardList" aria-label="개념 카드 목록"></div>
+            <article class="detail-panel" id="studyCardDetail" aria-live="polite"></article>
+          </div>
+        </section>
+
+        <section class="workspace-section two-column">
+          <article class="panel quiz-panel" id="quizMode" aria-labelledby="quizTitle">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Practice Quiz</p>
+                <h2 id="quizTitle">빠른 퀴즈</h2>
+              </div>
+              <span class="status-pill" id="quizStatus">준비</span>
+            </div>
+            <div class="filter-row compact" id="quizFilters" aria-label="퀴즈 주제 필터"></div>
+            <div class="quiz-meta">
+              <span id="quizSource">-</span>
+              <span id="quizDifficulty">-</span>
+            </div>
+            <p class="question" id="quizQuestion"></p>
+            <div class="choice-list" id="quizChoices" role="group" aria-label="퀴즈 선택지"></div>
+            <div class="explanation-box" id="quizFeedback" aria-live="polite"></div>
+            <div class="button-row">
+              <button class="secondary-button" id="nextQuizButton" type="button">다음 문제</button>
+              <button class="secondary-button" id="weakQuizButton" type="button">약점 문제</button>
+              <button class="text-button" id="resetQuizButton" type="button">퀴즈 기록 초기화</button>
+            </div>
+          </article>
+
+          <aside class="panel coach-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Study Coach</p>
+                <h2>복습 루프</h2>
+              </div>
+            </div>
+            <div id="coachTips" class="coach-list"></div>
+          </aside>
+        </section>
+
+        <section class="workspace-section" id="questionManager" aria-labelledby="managerTitle">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Question Bank</p>
+              <h2 id="managerTitle">문제 관리</h2>
+            </div>
+            <span class="section-note">문제 검수, 북마크, 복습 표시를 휴대폰에서도 관리합니다.</span>
+          </div>
+          <div class="panel manager-panel">
+            <div class="manager-toolbar">
+              <label>
+                <span>주제</span>
+                <select id="managerTopicFilter"></select>
+              </label>
+              <label>
+                <span>상태</span>
+                <select id="managerStatusFilter">
+                  <option value="all">전체</option>
+                  <option value="scope">범위 기반</option>
+                  <option value="verified">내가 검수함</option>
+                  <option value="review">복습 필요</option>
+                  <option value="bookmarked">북마크</option>
+                </select>
+              </label>
+              <label>
+                <span>검색</span>
+                <input id="questionSearch" type="search" placeholder="결측치, KNN, 변수 중요도..." />
+              </label>
+            </div>
+            <form class="custom-question-form" id="customQuestionForm">
+              <div class="custom-form-heading">
+                <h3>내 검수 문제 추가</h3>
+                <p>사용 권한이 있는 공식 샘플, 교재, 개인 정리 문제만 등록하세요.</p>
+              </div>
+              <div class="custom-form-grid">
+                <label>
+                  <span>주제</span>
+                  <select id="customQuestionTopic" name="topic"></select>
+                </label>
+                <label>
+                  <span>난이도</span>
+                  <select id="customQuestionDifficulty" name="difficulty">
+                    <option value="기초">기초</option>
+                    <option value="보통" selected>보통</option>
+                    <option value="심화">심화</option>
+                  </select>
+                </label>
+                <label>
+                  <span>정답</span>
+                  <select id="customQuestionAnswer" name="answerIndex">
+                    <option value="0">선택지 1</option>
+                    <option value="1">선택지 2</option>
+                    <option value="2">선택지 3</option>
+                    <option value="3">선택지 4</option>
+                  </select>
+                </label>
+                <label class="wide-field">
+                  <span>출처 메모</span>
+                  <input id="customQuestionSource" name="sourceTitle" type="text" placeholder="예: 공식 샘플 1회, 교재 3장, 내 오답 노트" />
+                </label>
+                <label class="wide-field">
+                  <span>문제</span>
+                  <textarea id="customQuestionText" name="question" rows="3" placeholder="문제를 입력하세요."></textarea>
+                </label>
+                <label>
+                  <span>선택지 1</span>
+                  <input name="choice0" type="text" />
+                </label>
+                <label>
+                  <span>선택지 2</span>
+                  <input name="choice1" type="text" />
+                </label>
+                <label>
+                  <span>선택지 3</span>
+                  <input name="choice2" type="text" />
+                </label>
+                <label>
+                  <span>선택지 4</span>
+                  <input name="choice3" type="text" />
+                </label>
+                <label class="wide-field">
+                  <span>해설</span>
+                  <textarea name="explanation" rows="3" placeholder="왜 이 답이 맞는지 적어두세요."></textarea>
+                </label>
+                <label class="wide-field">
+                  <span>생각 순서</span>
+                  <textarea name="thinking" rows="2" placeholder="시험장에서 떠올릴 판단 순서를 적어두세요."></textarea>
+                </label>
+              </div>
+              <div class="custom-form-actions">
+                <button class="primary-button" type="submit">검수 문제 저장</button>
+                <span id="customQuestionMessage" role="status"></span>
+              </div>
+            </form>
+            <div class="manager-summary" id="questionMetrics"></div>
+            <div class="question-list" id="questionList"></div>
+          </div>
+        </section>
+
+        <section class="workspace-section" id="mockExam" aria-labelledby="mockTitle">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Mock Exam</p>
+              <h2 id="mockTitle">15문항 모의고사</h2>
+            </div>
+            <span class="section-note">프로젝트 문서 기준: 15문항, 60분, 80점 목표</span>
+          </div>
+          <div class="mock-layout">
+            <aside class="exam-summary">
+              <div class="exam-stat">
+                <span>문항</span>
+                <strong>15</strong>
+              </div>
+              <div class="exam-stat">
+                <span>시간</span>
+                <strong>60분</strong>
+              </div>
+              <div class="exam-stat">
+                <span>목표</span>
+                <strong>80점+</strong>
+              </div>
+              <div class="history-panel">
+                <h3>최근 기록</h3>
+                <div id="mockHistory" class="mock-history"></div>
+              </div>
+            </aside>
+
+            <article class="panel mock-tool">
+              <div class="mock-toolbar">
+                <span class="timer" id="mockTimer">60:00</span>
+                <span class="status-pill" id="mockProgress">대기 중</span>
+              </div>
+              <div id="mockIntro">
+                <p class="question">모의고사는 실제 시험 대체가 아니라 판단 순서 훈련용입니다.</p>
+                <p class="muted">
+                  문제 은행에서 15문항을 뽑아 구성하고, 완료 후 주제별 약점을 자동으로 기록합니다.
+                </p>
+                <button class="primary-button" id="startMockButton" type="button">모의고사 시작</button>
+              </div>
+              <div id="mockQuestionArea" class="hidden">
+                <div class="quiz-meta">
+                  <span id="mockTopic">-</span>
+                  <span id="mockSource">-</span>
+                </div>
+                <p class="question" id="mockQuestion"></p>
+                <div class="choice-list" id="mockChoices" role="group" aria-label="모의고사 선택지"></div>
+                <p class="feedback" id="mockFeedback" aria-live="polite"></p>
+                <div class="button-row">
+                  <button class="secondary-button" id="nextMockButton" type="button">다음</button>
+                  <button class="text-button" id="finishMockButton" type="button">지금 채점</button>
+                </div>
+              </div>
+              <div id="mockResult" class="result-panel hidden" aria-live="polite"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="workspace-section" id="aiduPractice" aria-labelledby="aiduTitle">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">AIDU Workflow</p>
+              <h2 id="aiduTitle">AIDU 사고 흐름 연습</h2>
+            </div>
+            <button class="text-button" id="clearAiduButton" type="button">체크 해제</button>
+          </div>
+          <div class="aidu-layout">
+            <div class="checklist" id="aiduChecklist"></div>
+            <article class="panel scenario-panel">
+              <label class="field-label" for="scenarioSelect">연습 시나리오</label>
+              <select id="scenarioSelect" class="scenario-select"></select>
+              <div id="scenarioDetail" class="scenario-detail"></div>
+              <div class="prompt-stack" id="scenarioPrompts"></div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>

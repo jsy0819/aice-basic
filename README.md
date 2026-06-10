@@ -1,37 +1,60 @@
 # AICE Basic
 
-AICE Basic is a beginner-friendly study app project for preparing for the AICE Basic certificate while learning how to work with Codex.
+AICE Basic 자격증 준비를 위한 개인용 학습 웹앱입니다.
 
-The first version will be a simple browser-based web app with:
+코딩을 거의 모르는 사용자도 바로 열어 쓸 수 있도록, 첫 버전은 설치가 필요 없는 정적 HTML/CSS/JavaScript 앱으로 만들고 있습니다.
 
-- Study cards for key AICE Basic concepts
-- Short quizzes with explanations
-- A 15-question mock exam mode
-- Progress tracking with `localStorage`
-- AIDU workflow checklist practice
+## 현재 기능
 
-## Current Status
+- 오늘의 학습 대시보드
+- AICE Basic 핵심 개념 카드
+- 빠른 퀴즈와 해설
+- 15문항 모의고사
+- AIDU 흐름 체크리스트
+- 약점 영역과 복습 추천
+- 문제 관리, 북마크, 복습 표시
+- 직접 검수한 문제 추가 및 삭제
+- 브라우저 `localStorage` 저장
 
-This repository is in the setup and planning stage.
+## 로컬에서 열기
 
-The project is intentionally starting small:
+아래 파일을 브라우저로 열면 됩니다.
 
-- No backend
-- No login
-- No database
-- No external dependencies
-- No deployment until the local version feels useful
+```text
+app/index.html
+```
 
-## Recommended Build Path
+별도 설치, 로그인, 백엔드, 데이터베이스는 필요하지 않습니다.
 
-1. Define the product plan and study scope.
-2. Build a static dashboard in `app/`.
-3. Add study cards.
-4. Add quiz data and answer explanations.
-5. Add mock exam mode.
-6. Add progress tracking with `localStorage`.
-7. Verify the app in the browser.
-8. Deploy with Sites only after local review.
+## GitHub Pages 배포
+
+이 저장소에는 GitHub Pages용 워크플로가 들어 있습니다.
+
+```text
+.github/workflows/deploy-pages.yml
+```
+
+배포 방식은 간단합니다.
+
+1. GitHub에 새 저장소를 만듭니다.
+2. 이 프로젝트를 그 저장소에 push합니다.
+3. GitHub 저장소의 `Settings > Pages`로 갑니다.
+4. `Build and deployment > Source`를 `GitHub Actions`로 선택합니다.
+5. `Actions` 탭에서 `Deploy GitHub Pages`가 성공했는지 확인합니다.
+
+배포 주소는 보통 아래 형태입니다.
+
+```text
+https://사용자명.github.io/저장소명/
+```
+
+이 프로젝트는 `app` 폴더만 사이트로 배포합니다.
+
+## 문제 검증 기준
+
+앱에 기본 포함된 문제는 공식 기출 복사본이 아닙니다.
+
+현재 기본 문제는 AICE Basic 학습 범위와 프로젝트 문서를 기준으로 만든 자체 제작 문제입니다. 공식 샘플, 교재, 유료 자료, 수업 자료에서 문제를 추가하려면 사용 권한을 확인한 뒤 `내 검수 문제 추가` 기능으로 직접 등록하세요.
 
 ## Project Documents
 
@@ -40,13 +63,4 @@ The project is intentionally starting small:
 - [Codex workflow](docs/codex-workflow.md)
 - [Implementation roadmap](docs/implementation-roadmap.md)
 - [Manual setup checklist](docs/manual-setup-checklist.md)
-
-## For Future Codex Turns
-
-Ask Codex like this:
-
-```text
-AICE Basic 앱의 다음 단계를 진행해줘.
-AGENTS.md와 docs/product-plan.md를 기준으로,
-초보자가 이해할 수 있게 설명하면서 작게 구현하고 브라우저로 확인해줘.
-```
+- [Service review](docs/service-review.md)
